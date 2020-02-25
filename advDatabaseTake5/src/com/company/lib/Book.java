@@ -1,6 +1,7 @@
 package com.company.lib;
 
 import com.company.db.Entity;
+import com.company.db.Search;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Optional;
 
 
 public class Book implements Entity {
@@ -47,7 +49,7 @@ public class Book implements Entity {
     }
 
 
-    Book(String bookID, String ISBN, String title, String authorID, String genre, String year) {
+    public Book(String bookID, String ISBN, String title, String authorID, String genre, String year) {
         this.bookID = bookID;
         this.ISBN = ISBN;
         this.title = title;
@@ -110,7 +112,7 @@ public class Book implements Entity {
 
     public String toString() {
         return bookID + "\n" + ISBN + "\n" + title +
-                "\n" + authorID + "\n" + genre + "\n" + year + "\n" + path+"\n"+dateTimeCreated+"\n"+dateTimeAccessed;
+                "\n" + authorID + "\n" + genre + "\n" + year + "\n" + path + "\n" + dateTimeCreated + "\n" + dateTimeAccessed;
     }
 
     public LocalDateTime getDateTimeCreated() {
@@ -129,4 +131,19 @@ public class Book implements Entity {
     public static Path getPath() {
         return Path.of(Library.path + "/books");
     }
+
+    public String toPrettyString() {
+
+        String authorName = "unknown";
+        Optional<Entity> ent = Search.findOne("authorID", authorID, true, Author.class);
+        if (ent.isPresent()) {
+            Author a = (Author) ent.get();
+            authorName = a.getFirstName() + " " + a.getLastName();
+        }
+        return String.format("~~~~~~~~~~~~~~%nTitle: %s%nAuthor: %s%nGenre: %s%nYear: %s%nDate added: %s%nDate accessed: %s%n~~~~~~~~~~~~~~", title,
+                authorName, genre, year,
+                dateTimeCreated.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)),
+                dateTimeAccessed.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
+    }
+
 }

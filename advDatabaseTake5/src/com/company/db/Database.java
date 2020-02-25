@@ -12,7 +12,6 @@ import java.util.List;
 
 public abstract class Database {
 
-
     public static File[] getFilesFromPath(Path path) {
         return path.toFile().listFiles();
     }
@@ -21,21 +20,22 @@ public abstract class Database {
 
         Path path = null;
         try {
-            path = (Path)entity.getClass().getDeclaredMethod("getPath").invoke(null);
+            path = (Path) entity.getClass().getDeclaredMethod("getPath").invoke(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         path = path.resolve(entity.getPathWithId());
-        System.out.println("path = " + path);
 
         File file = new File(String.valueOf(path));
         try {
             if (file.exists()) {
-                System.out.println("Filename "+file.toString()+" already exists, overwriting file...");
+                System.out.println("Filename " + file.getName() + " already exists, overwriting file...");
             }
             PrintWriter writer = null;
             writer = new PrintWriter(String.valueOf(path), StandardCharsets.UTF_8);
             writer.println(entity.toString());
+            System.out.println("Saved " + file.getName() + ".");
             writer.close();
 
         } catch (IOException e) {
@@ -53,24 +53,26 @@ public abstract class Database {
         }
         return contents;
     }
-    public static void delete(Entity entity){
+
+    public static void delete(Entity entity) {
         Path path = null;
         try {
-            path = (Path)entity.getClass().getDeclaredMethod("getPath").invoke(null);
+            path = (Path) entity.getClass().getDeclaredMethod("getPath").invoke(null);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
         path = path.resolve(entity.getPathWithId());
 
-        if(Files.exists(path)){
+        if (Files.exists(path)) {
             try {
                 Files.delete(path);
-                System.out.println("Deleted "+path);
+                System.out.println("Deleted " + path);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+
     public static void verifyDirectoryIntegrity(Path path) {
         checkPath(path);
     }

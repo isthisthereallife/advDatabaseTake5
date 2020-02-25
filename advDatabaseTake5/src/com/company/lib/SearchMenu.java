@@ -44,10 +44,12 @@ public class SearchMenu {
         String field = new Scanner(System.in).nextLine();
         if (field.equalsIgnoreCase("author")) field = "authorID";
 
-        System.out.print("Search where? ");
+        System.out.print("Search what folder? ");
         Class c = null;
         String klass = new Scanner(System.in).nextLine();
         klass = klass.substring(0, 1).toUpperCase().concat(klass.substring(1));
+
+        //this needs work
         if (klass.equalsIgnoreCase(Book.class.getSimpleName()) || klass.replace("s", "").equalsIgnoreCase(Book.class.getSimpleName())) {
             c = Book.class;
         } else if (klass.equalsIgnoreCase(Author.class.getSimpleName()) || klass.replace("s", "").equalsIgnoreCase(Author.class.getSimpleName())) {
